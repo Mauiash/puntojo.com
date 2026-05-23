@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Punto. — 3D Printing Jordan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --sky: #29B6F6;
+    --sky-dark: #0277BD;
+    --sky-light: #E3F4FD;
+    --navy: #1A1A2E;
+    --white: #FFFFFF;
+    --off-white: #F5F9FD;
+    --gray: #8A9BB0;
+    --text: #1A1A2E;
+    --text-muted: #5C6B7A;
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--font-body); background: var(--white); color: var(--text); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+  /* RTL MODE */
+  html[dir="rtl"] body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; }
+  html[dir="rtl"] .hero-h1,
+  html[dir="rtl"] .section-h2,
+  html[dir="rtl"] .step-title,
+  html[dir="rtl"] .service-title,
+  html[dir="rtl"] .form-title,
+  html[dir="rtl"] .footer-brand .nav-logo { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; }
+  html[dir="rtl"] .section-sub { text-align: left; }
+  html[dir="rtl"] .step:not(:last-child)::after { content: '←'; right: auto; left: -12px; }
+  html[dir="rtl"] .contact-option:hover { transform: translateX(-4px); }
+  html[dir="rtl"] .nav-links { flex-direction: row-reverse; }
+
+  /* LANG SWITCHER */
+  .lang-switcher {
+    display: flex;
+    align-items: center;
+    background: var(--off-white);
+    border: 1px solid rgba(41,182,246,0.2);
+    border-radius: 100px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .lang-btn {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 14px;
+    border-radius: 100px;
+    border: none;
+    cursor: pointer;
+    background: transparent;
+    color: var(--text-muted);
+    transition: all 0.2s;
+    letter-spacing: 0.04em;
+  }
+  .lang-btn.active { background: var(--sky); color: white; }
+  .lang-btn:hover:not(.active) { color: var(--sky); }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 0 5%; height: 68px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(41,182,246,0.12);
+    transition: box-shadow 0.3s ease;
+  }
+  .nav-left { display: flex; align-items: center; gap: 2.5rem; }
+  .nav-logo { font-family: var(--font-display); font-weight: 800; font-size: 26px; color: var(--sky); letter-spacing: -0.03em; text-decoration: none; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { font-size: 14px; font-weight: 400; color: var(--text-muted); text-decoration: none; letter-spacing: 0.02em; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--sky); }
+  .nav-right { display: flex; align-items: center; gap: 1rem; }
+  .nav-cta { background: var(--sky); color: white; padding: 9px 22px; border-radius: 100px; font-size: 13px; font-weight: 500; text-decoration: none; transition: background 0.2s, transform 0.15s; white-space: nowrap; }
+  .nav-cta:hover { background: var(--sky-dark); transform: translateY(-1px); }
+
+  /* HERO */
+  .hero { min-height: 100vh; display: flex; align-items: center; padding: 120px 5% 80px; position: relative; overflow: hidden; background: var(--white); }
+  .hero-bg { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .hero-circle-1 { position: absolute; width: 700px; height: 700px; border-radius: 50%; background: radial-gradient(circle, rgba(41,182,246,0.08) 0%, transparent 70%); top: -200px; right: -200px; }
+  .hero-circle-2 { position: absolute; width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle, rgba(41,182,246,0.06) 0%, transparent 70%); bottom: -100px; left: 10%; }
+  .hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(41,182,246,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(41,182,246,0.04) 1px, transparent 1px); background-size: 60px 60px; }
+  .hero-content { position: relative; max-width: 1100px; margin: 0 auto; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+  .hero-tag { display: inline-flex; align-items: center; gap: 8px; background: var(--sky-light); color: var(--sky-dark); font-size: 12px; font-weight: 500; padding: 6px 14px; border-radius: 100px; margin-bottom: 1.5rem; letter-spacing: 0.05em; animation: fadeUp 0.6s var(--ease-out) both; }
+  .hero-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--sky); flex-shrink: 0; }
+  .hero-h1 { font-family: var(--font-display); font-size: clamp(42px, 6vw, 72px); font-weight: 800; line-height: 1.05; letter-spacing: -0.03em; color: var(--navy); margin-bottom: 1.25rem; animation: fadeUp 0.6s var(--ease-out) 0.1s both; }
+  .hero-h1 span { color: var(--sky); }
+  .hero-sub { font-size: 17px; font-weight: 300; color: var(--text-muted); line-height: 1.7; max-width: 420px; margin-bottom: 2.5rem; animation: fadeUp 0.6s var(--ease-out) 0.2s both; }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; animation: fadeUp 0.6s var(--ease-out) 0.3s both; }
+  .btn-primary { display: inline-flex; align-items: center; gap: 8px; background: var(--sky); color: white; font-size: 15px; font-weight: 500; padding: 14px 28px; border-radius: 100px; text-decoration: none; transition: background 0.2s, transform 0.15s; border: none; cursor: pointer; }
+  .btn-primary:hover { background: var(--sky-dark); transform: translateY(-2px); }
+  .btn-outline { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: var(--navy); font-size: 15px; font-weight: 400; padding: 14px 28px; border-radius: 100px; text-decoration: none; border: 1.5px solid rgba(26,26,46,0.15); transition: border-color 0.2s, color 0.2s, transform 0.15s; cursor: pointer; }
+  .btn-outline:hover { border-color: var(--sky); color: var(--sky); transform: translateY(-2px); }
+  .hero-right { display: flex; justify-content: center; animation: fadeUp 0.8s var(--ease-out) 0.15s both; }
+  .hero-visual { width: 100%; max-width: 440px; aspect-ratio: 1; background: var(--off-white); border-radius: 28px; border: 1px solid rgba(41,182,246,0.15); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .hero-visual-inner { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; }
+  .printer-svg { width: 180px; opacity: 0.9; }
+  .print-label { font-family: var(--font-display); font-size: 28px; font-weight: 800; color: var(--sky); letter-spacing: -0.02em; }
+  .print-sub { font-size: 12px; color: var(--gray); letter-spacing: 0.1em; text-transform: uppercase; }
+  .hero-visual-badge { position: absolute; bottom: 24px; right: 24px; background: white; border: 1px solid rgba(41,182,246,0.2); border-radius: 14px; padding: 10px 16px; display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; color: var(--navy); }
+  .badge-dot { width: 8px; height: 8px; border-radius: 50%; background: #4CAF50; flex-shrink: 0; animation: pulse 2s infinite; }
+  .hero-visual-badge2 { position: absolute; top: 24px; left: 24px; background: var(--sky); border-radius: 14px; padding: 10px 16px; font-size: 12px; font-weight: 500; color: white; }
+  html[dir="rtl"] .hero-visual-badge { right: auto; left: 24px; }
+  html[dir="rtl"] .hero-visual-badge2 { left: auto; right: 24px; }
+
+  /* STATS */
+  .stats { background: var(--navy); padding: 56px 5%; }
+  .stats-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; }
+  .stat-item { text-align: center; padding: 1rem; }
+  .stat-number { font-family: var(--font-display); font-size: 44px; font-weight: 800; color: var(--sky); letter-spacing: -0.03em; line-height: 1; margin-bottom: 8px; }
+  .stat-label { font-size: 13px; color: rgba(255,255,255,0.5); letter-spacing: 0.04em; }
+
+  /* SECTIONS */
+  .services { padding: 100px 5%; background: var(--white); }
+  .section-header { max-width: 1100px; margin: 0 auto 3.5rem; display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+  .section-tag { display: inline-block; font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sky); margin-bottom: 0.75rem; }
+  .section-h2 { font-family: var(--font-display); font-size: clamp(28px, 4vw, 44px); font-weight: 700; color: var(--navy); letter-spacing: -0.02em; line-height: 1.15; }
+  .section-h2 span { color: var(--sky); }
+  .section-sub { font-size: 15px; color: var(--text-muted); line-height: 1.7; max-width: 360px; text-align: right; }
+  html[dir="rtl"] .section-sub { text-align: left; }
+
+  /* SERVICE CARDS */
+  .services-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .service-card { background: var(--off-white); border: 1px solid rgba(41,182,246,0.1); border-radius: 20px; padding: 2rem; transition: transform 0.25s var(--ease-out), border-color 0.25s, box-shadow 0.25s; position: relative; overflow: hidden; }
+  .service-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--sky); opacity: 0; transition: opacity 0.25s; }
+  .service-card:hover { transform: translateY(-6px); border-color: rgba(41,182,246,0.3); box-shadow: 0 20px 40px rgba(41,182,246,0.08); }
+  .service-card:hover::before { opacity: 1; }
+  .service-icon { width: 52px; height: 52px; background: var(--sky-light); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; }
+  .service-icon svg { width: 26px; height: 26px; }
+  .service-title { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 10px; letter-spacing: -0.01em; }
+  html[dir="rtl"] .service-title { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; }
+  .service-desc { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+
+  /* PROCESS */
+  .process { padding: 100px 5%; background: var(--navy); position: relative; overflow: hidden; }
+  .process::before { content: ''; position: absolute; top: -200px; right: -200px; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(41,182,246,0.06) 0%, transparent 70%); pointer-events: none; }
+  .process .section-h2 { color: white; }
+  .process .section-tag { color: rgba(41,182,246,0.8); }
+  .process .section-sub { color: rgba(255,255,255,0.4); }
+  .process-steps { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; position: relative; }
+  .step { padding: 2.5rem 2rem; position: relative; }
+  .step:not(:last-child)::after { content: '→'; position: absolute; right: -12px; top: 3rem; color: rgba(41,182,246,0.3); font-size: 24px; z-index: 1; }
+  .step-num { font-family: var(--font-display); font-size: 72px; font-weight: 800; color: rgba(41,182,246,0.08); line-height: 1; margin-bottom: -0.5rem; letter-spacing: -0.04em; }
+  .step-title { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: white; margin-bottom: 10px; letter-spacing: -0.01em; }
+  html[dir="rtl"] .step-title { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; }
+  .step-desc { font-size: 14px; color: rgba(255,255,255,0.45); line-height: 1.7; }
+
+  /* GALLERY */
+  .gallery { padding: 100px 5%; background: var(--off-white); }
+  .gallery-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: auto auto; gap: 16px; }
+  .gallery-item { border-radius: 16px; overflow: hidden; background: white; border: 1px solid rgba(41,182,246,0.1); aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--gray); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; position: relative; transition: transform 0.25s var(--ease-out); }
+  .gallery-item:hover { transform: scale(1.02); }
+  .gallery-item.tall { grid-row: span 2; aspect-ratio: auto; min-height: 320px; }
+  .gallery-item.wide { grid-column: span 2; aspect-ratio: 2/1; }
+
+  .gi-1 { background: linear-gradient(135deg, #E3F4FD, #B3E5FC); }
+  .gi-2 { background: linear-gradient(135deg, #F5F9FD, #E3F4FD); }
+  .gi-3 { background: linear-gradient(135deg, #1A1A2E, #16213E); }
+  .gi-4 { background: linear-gradient(135deg, #E3F4FD, #F5F9FD); }
+  .gi-5 { background: linear-gradient(135deg, #B3E5FC, #E3F4FD); }
+  .gi-6 { background: linear-gradient(135deg, #F5F9FD, #EDF2F7); }
+
+  /* CONTACT */
+  .contact { padding: 100px 5%; background: var(--white); }
+  .contact-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+  .contact-desc { font-size: 15px; color: var(--text-muted); line-height: 1.7; margin-bottom: 2rem; }
+  .contact-options { display: flex; flex-direction: column; gap: 12px; margin-top: 2rem; }
+  .contact-option { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: var(--off-white); border: 1px solid rgba(41,182,246,0.12); border-radius: 14px; text-decoration: none; transition: border-color 0.2s, transform 0.15s; }
+  .contact-option:hover { border-color: var(--sky); transform: translateX(4px); }
+  html[dir="rtl"] .contact-option:hover { transform: translateX(-4px); }
+  .contact-option-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--sky-light); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .contact-option-icon svg { width: 20px; height: 20px; }
+  .contact-option-text { font-size: 14px; font-weight: 500; color: var(--navy); }
+  .contact-option-sub { font-size: 12px; color: var(--text-muted); }
+  .contact-form { background: var(--off-white); border: 1px solid rgba(41,182,246,0.12); border-radius: 24px; padding: 2.5rem; }
+  .form-title { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 1.5rem; }
+  .form-group { margin-bottom: 1rem; }
+  .form-group label { display: block; font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px 16px; background: white; border: 1px solid rgba(41,182,246,0.15); border-radius: 10px; font-family: inherit; font-size: 14px; color: var(--navy); outline: none; transition: border-color 0.2s; appearance: none; }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--sky); }
+  .form-group textarea { resize: vertical; min-height: 100px; }
+  .form-submit { width: 100%; background: var(--sky); color: white; border: none; padding: 14px; border-radius: 100px; font-family: inherit; font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.2s, transform 0.15s; margin-top: 0.5rem; }
+  .form-submit:hover { background: var(--sky-dark); transform: translateY(-2px); }
+
+  /* FOOTER */
+  footer { background: var(--navy); padding: 60px 5% 32px; }
+  .footer-inner { max-width: 1100px; margin: 0 auto; }
+  .footer-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 3rem; flex-wrap: wrap; padding-bottom: 3rem; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 2rem; }
+  .footer-brand .nav-logo { display: block; margin-bottom: 0.75rem; }
+  .footer-tagline { font-size: 13px; color: rgba(255,255,255,0.35); line-height: 1.6; max-width: 220px; }
+  .footer-links h4 { font-family: var(--font-display); font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; }
+  html[dir="rtl"] .footer-links h4 { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; }
+  .footer-links ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .footer-links a { font-size: 14px; color: rgba(255,255,255,0.55); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--sky); }
+  .footer-bottom { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: rgba(255,255,255,0.2); flex-wrap: wrap; gap: 1rem; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out); }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    .hero-content { grid-template-columns: 1fr; gap: 3rem; }
+    .hero-right { display: none; }
+    .stats-inner { grid-template-columns: repeat(2, 1fr); }
+    .services-grid, .process-steps { grid-template-columns: 1fr; }
+    .step:not(:last-child)::after { content: '↓'; right: auto; left: 2rem; top: auto; bottom: -16px; }
+    html[dir="rtl"] .step:not(:last-child)::after { content: '↓'; right: 2rem; left: auto; }
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+    .gallery-item.tall, .gallery-item.wide { grid-row: auto; grid-column: auto; aspect-ratio: 1; }
+    .contact-inner { grid-template-columns: 1fr; gap: 3rem; }
+    .nav-links { display: none; }
+    .section-header { flex-direction: column; align-items: flex-start; }
+    .section-sub { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <a href="#" class="nav-logo">Punto.</a>
+    <ul class="nav-links">
+      <li><a href="#services" data-en="Services" data-ar="خدماتنا">Services</a></li>
+      <li><a href="#process" data-en="How it works" data-ar="كيف نعمل">How it works</a></li>
+      <li><a href="#gallery" data-en="Work" data-ar="أعمالنا">Work</a></li>
+      <li><a href="#contact" data-en="Contact" data-ar="تواصل">Contact</a></li>
+    </ul>
+  </div>
+  <div class="nav-right">
+    <div class="lang-switcher">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('ar')">AR</button>
+    </div>
+    <a href="#contact" class="nav-cta" data-en="Order Now" data-ar="اطلب الآن">Order Now</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-circle-1"></div>
+    <div class="hero-circle-2"></div>
+    <div class="hero-grid"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-left">
+      <div class="hero-tag" data-en="3D Printing · Jordan" data-ar="طباعة ثلاثية الأبعاد · الأردن">3D Printing · Jordan</div>
+      <h1 class="hero-h1" data-en="From idea<br>to <span>object.</span>" data-ar="من فكرة<br>إلى <span>واقع.</span>">From idea<br>to <span>object.</span></h1>
+      <p class="hero-sub" data-en="Custom 3D printing for gifts, prototypes, and products — fast, precise, and delivered to you anywhere in Jordan." data-ar="طباعة ثلاثية الأبعاد مخصصة للهدايا والنماذج الأولية والمنتجات — سريعة ودقيقة وتوصّل لباب بيتك في كل مكان في الأردن.">Custom 3D printing for gifts, prototypes, and products — fast, precise, and delivered to you anywhere in Jordan.</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary" data-en="Start your order" data-ar="ابدأ طلبك">
+          Start your order
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#services" class="btn-outline" data-en="See what we print" data-ar="اكتشف خدماتنا">See what we print</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-visual">
+        <div class="hero-visual-badge2">Punto.</div>
+        <div class="hero-visual-inner">
+          <svg class="printer-svg" viewBox="0 0 200 160" fill="none">
+            <rect x="40" y="100" width="120" height="12" rx="4" fill="#29B6F6" opacity="0.15"/>
+            <rect x="40" y="100" width="120" height="12" rx="4" stroke="#29B6F6" stroke-width="1.5"/>
+            <rect x="60" y="112" width="80" height="28" rx="4" fill="#E3F4FD" stroke="#29B6F6" stroke-width="1.5"/>
+            <rect x="30" y="94" width="140" height="10" rx="3" fill="#29B6F6" opacity="0.2" stroke="#29B6F6" stroke-width="1.5"/>
+            <rect x="35" y="30" width="130" height="66" rx="6" fill="#F5F9FD" stroke="#29B6F6" stroke-width="1.5"/>
+            <line x1="100" y1="94" x2="100" y2="30" stroke="#29B6F6" stroke-width="2" stroke-dasharray="3 3"/>
+            <rect x="85" y="56" width="30" height="8" rx="2" fill="#29B6F6" opacity="0.4"/>
+            <rect x="85" y="68" width="30" height="8" rx="2" fill="#29B6F6" opacity="0.25"/>
+            <rect x="85" y="80" width="30" height="8" rx="2" fill="#29B6F6" opacity="0.12"/>
+            <circle cx="100" cy="52" r="4" fill="#29B6F6"/>
+            <rect x="46" y="108" width="8" height="28" rx="2" fill="#29B6F6" opacity="0.3"/>
+            <rect x="146" y="108" width="8" height="28" rx="2" fill="#29B6F6" opacity="0.3"/>
+          </svg>
+          <div class="print-label">Punto.</div>
+          <div class="print-sub" data-en="3D Printing · Jordan" data-ar="طباعة ثلاثية الأبعاد · الأردن">3D Printing · Jordan</div>
+        </div>
+        <div class="hero-visual-badge">
+          <div class="badge-dot"></div>
+          <span data-en="Accepting orders" data-ar="نقبل الطلبات">Accepting orders</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+  <div class="stats-inner">
+    <div class="stat-item reveal">
+      <div class="stat-number">1000+</div>
+      <div class="stat-label" data-en="Prints delivered" data-ar="قطعة مطبوعة">Prints delivered</div>
+    </div>
+    <div class="stat-item reveal">
+      <div class="stat-number">48h+</div>
+      <div class="stat-label" data-en="Average turnaround" data-ar="متوسط وقت التسليم">Average turnaround</div>
+    </div>
+    <div class="stat-item reveal">
+      <div class="stat-number">3+</div>
+      <div class="stat-label" data-en="Service types" data-ar="أنواع الخدمات">Service types</div>
+    </div>
+    <div class="stat-item reveal">
+      <div class="stat-number">JO</div>
+      <div class="stat-label" data-en="Based in Jordan" data-ar="في الأردن">Based in Jordan</div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="section-header reveal">
+    <div>
+      <span class="section-tag" data-en="What we do" data-ar="ما نقدمه">What we do</span>
+      <h2 class="section-h2" data-en="We print <span>everything.</span>" data-ar="نطبع <span>كل شيء.</span>">We print <span>everything.</span></h2>
+    </div>
+    <p class="section-sub" data-en="From a custom gift to a professional prototype — we handle it all with precision." data-ar="من هدية مخصصة إلى نموذج احترافي — نتولى كل شيء بدقة عالية.">From a custom gift to a professional prototype — we handle it all with precision.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <div class="service-icon">
+        <svg viewBox="0 0 26 26" fill="none"><rect x="4" y="12" width="18" height="10" rx="3" stroke="#29B6F6" stroke-width="1.5"/><path d="M8 12V8a5 5 0 0110 0v4" stroke="#29B6F6" stroke-width="1.5" stroke-linecap="round"/><circle cx="13" cy="17" r="2" fill="#29B6F6"/></svg>
+      </div>
+      <div class="service-title" data-en="Custom Gifts" data-ar="هدايا مخصصة">Custom Gifts</div>
+      <p class="service-desc" data-en="Personalized prints with names, logos, or unique designs — for every occasion that deserves something special." data-ar="مطبوعات شخصية بالأسماء والشعارات والتصاميم الفريدة — لكل مناسبة تستحق شيئاً مميزاً.">Personalized prints with names, logos, or unique designs — for every occasion that deserves something special.</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-icon">
+        <svg viewBox="0 0 26 26" fill="none"><rect x="3" y="3" width="9" height="9" rx="2" stroke="#29B6F6" stroke-width="1.5"/><rect x="14" y="3" width="9" height="9" rx="2" stroke="#29B6F6" stroke-width="1.5"/><rect x="3" y="14" width="9" height="9" rx="2" stroke="#29B6F6" stroke-width="1.5"/><path d="M14 18.5h9M18.5 14v9" stroke="#29B6F6" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="service-title" data-en="On-Demand Prints" data-ar="طباعة حسب الطلب">On-Demand Prints</div>
+      <p class="service-desc" data-en="Send us your file — STL, OBJ, or your idea — and we'll turn it into a physical object in any color or finish." data-ar="أرسل لنا ملفك — STL أو OBJ أو فكرتك — وسنحوّلها إلى قطعة حقيقية بأي لون أو تشطيب تريده.">Send us your file — STL, OBJ, or your idea — and we'll turn it into a physical object in any color or finish.</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-icon">
+        <svg viewBox="0 0 26 26" fill="none"><path d="M13 3l2.5 5 5.5.8-4 3.9.95 5.5L13 15.75 8.05 18.2l.95-5.5-4-3.9 5.5-.8z" stroke="#29B6F6" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 22h8" stroke="#29B6F6" stroke-width="1.5" stroke-linecap="round"/><path d="M13 18.5V22" stroke="#29B6F6" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="service-title" data-en="Prototyping" data-ar="نماذج أولية">Prototyping</div>
+      <p class="service-desc" data-en="Fast, accurate prototypes for students, engineers, and startups. Test your design before mass production." data-ar="نماذج أولية سريعة ودقيقة للطلاب والمهندسين والشركات الناشئة. اختبر تصميمك قبل الإنتاج الضخم.">Fast, accurate prototypes for students, engineers, and startups. Test your design before mass production.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process" id="process">
+  <div class="section-header reveal" style="max-width:1100px;margin:0 auto 3.5rem;">
+    <div>
+      <span class="section-tag" data-en="How it works" data-ar="كيف نعمل">How it works</span>
+      <h2 class="section-h2" style="color:white;" data-en="Three steps.<br><span>That's it.</span>" data-ar="ثلاث خطوات.<br><span>وبس.</span>">Three steps.<br><span>That's it.</span></h2>
+    </div>
+    <p class="section-sub" style="color:rgba(255,255,255,0.4);" data-en="Simple, fast, and reliable — every time." data-ar="بسيط وسريع وموثوق — في كل مرة.">Simple, fast, and reliable — every time.</p>
+  </div>
+  <div class="process-steps">
+    <div class="step reveal">
+      <div class="step-num">01</div>
+      <div class="step-title" data-en="Send your design" data-ar="أرسل تصميمك">Send your design</div>
+      <p class="step-desc" data-en="Send us your STL/OBJ file or describe your idea via WhatsApp or the order form. We'll confirm the details with you." data-ar="أرسل لنا ملف STL/OBJ أو صف فكرتك عبر واتساب أو نموذج الطلب. سنتأكد من التفاصيل معك.">Send us your STL/OBJ file or describe your idea via WhatsApp or the order form. We'll confirm the details with you.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">02</div>
+      <div class="step-title" data-en="We print it" data-ar="نطبعها">We print it</div>
+      <p class="step-desc" data-en="Our printer gets to work. You'll get a preview before we start and progress updates along the way." data-ar="تبدأ طابعتنا بالعمل. ستحصل على معاينة قبل البدء وتحديثات أثناء الطباعة.">Our printer gets to work. You'll get a preview before we start and progress updates along the way.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">03</div>
+      <div class="step-title" data-en="You receive it" data-ar="تستلمها">You receive it</div>
+      <p class="step-desc" data-en="We deliver to your door anywhere in Jordan. Most orders are ready within 24–48 hours." data-ar="نوصّل لباب بيتك في كل مكان بالأردن. معظم الطلبات جاهزة خلال 24–48 ساعة.">We deliver to your door anywhere in Jordan. Most orders are ready within 24–48 hours.</p>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery" id="gallery">
+  <div class="section-header reveal">
+    <div>
+      <span class="section-tag" data-en="Our work" data-ar="أعمالنا">Our work</span>
+      <h2 class="section-h2" data-en="From our <span>printer.</span>" data-ar="من <span>طابعتنا.</span>">From our <span>printer.</span></h2>
+    </div>
+    <p class="section-sub" data-en="A glimpse of what we create." data-ar="لمحة مما نصنعه.">A glimpse of what we create.</p>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-item tall gi-1 reveal"><img src="https://images.unsplash.com/photo-1705475025559-ad8efdedc74f?w=600&q=80&fit=crop" alt="3D printer machine" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+    <div class="gallery-item gi-2 reveal"><img src="https://images.unsplash.com/photo-1611117775350-ac3950990985?w=600&q=80&fit=crop" alt="3D printer close up" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+    <div class="gallery-item gi-3 reveal"><img src="https://images.unsplash.com/photo-1636690581110-a512fed05fd3?w=600&q=80&fit=crop" alt="3D printing filament" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+    <div class="gallery-item gi-4 reveal"><img src="https://images.unsplash.com/photo-1600348712270-1af7e39b35b4?w=600&q=80&fit=crop" alt="3D printed prototype" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+    <div class="gallery-item wide gi-5 reveal"><img src="https://images.unsplash.com/photo-1563520240919-3b24f45c1f7e?w=1200&q=80&fit=crop" alt="3D printing process" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+    <div class="gallery-item gi-6 reveal"><img src="https://images.unsplash.com/photo-1570103236225-fe88bfa58c4b?w=600&q=80&fit=crop" alt="3D printed object" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-inner">
+    <div class="contact-left reveal">
+      <span class="section-tag" data-en="Get in touch" data-ar="تواصل معنا">Get in touch</span>
+      <h2 class="section-h2" style="margin-bottom:1rem;" data-en="Ready to<br><span>print?</span>" data-ar="جاهز<br><span>للطباعة؟</span>">Ready to<br><span>print?</span></h2>
+      <p class="contact-desc" data-en="Tell us what you need. We'll get back to you quickly with a quote and timeline." data-ar="أخبرنا بما تحتاجه. سنرد عليك بسرعة بعرض سعر وموعد تسليم.">Tell us what you need. We'll get back to you quickly with a quote and timeline.</p>
+      <div class="contact-options">
+        <a href="https://wa.me/962770295890" class="contact-option">
+          <div class="contact-option-icon"><svg viewBox="0 0 20 20" fill="none"><path d="M10 2C5.58 2 2 5.58 2 10c0 1.5.42 2.9 1.14 4.1L2 18l3.97-1.12A8 8 0 1010 2z" stroke="#29B6F6" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.5 8.5c.5 1.5 2 3 3.5 3.5" stroke="#29B6F6" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+          <div><div class="contact-option-text" data-en="WhatsApp us" data-ar="راسلنا على واتساب">WhatsApp us</div><div class="contact-option-sub" data-en="Fastest way to reach us" data-ar="أسرع طريقة للتواصل">Fastest way to reach us</div></div>
+        </a>
+        <a href="https://instagram.com/punto.jo" class="contact-option">
+          <div class="contact-option-icon"><svg viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="4" stroke="#29B6F6" stroke-width="1.4"/><circle cx="10" cy="10" r="3" stroke="#29B6F6" stroke-width="1.4"/><circle cx="14" cy="6" r="1" fill="#29B6F6"/></svg></div>
+          <div><div class="contact-option-text">@punto.jo</div><div class="contact-option-sub" data-en="DM us on Instagram" data-ar="راسلنا على انستقرام">DM us on Instagram</div></div>
+        </a>
+        <a href="mailto:hello@puntojo.com" class="contact-option">
+          <div class="contact-option-icon"><svg viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="12" rx="2" stroke="#29B6F6" stroke-width="1.4"/><path d="M2 7l8 5 8-5" stroke="#29B6F6" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+          <div><div class="contact-option-text">hello@puntojo.com</div><div class="contact-option-sub" data-en="For detailed inquiries" data-ar="للاستفسارات التفصيلية">For detailed inquiries</div></div>
+        </a>
+      </div>
+    </div>
+    <div class="contact-form reveal">
+      <div class="form-title" data-en="Request a quote" data-ar="اطلب عرض سعر">Request a quote</div>
+      <div class="form-group">
+        <label data-en="Your name" data-ar="اسمك">Your name</label>
+        <input type="text" data-en-placeholder="e.g. Ahmad Al-Rashid" data-ar-placeholder="مثال: أحمد الراشد" placeholder="e.g. Ahmad Al-Rashid">
+      </div>
+      <div class="form-group">
+        <label data-en="Phone / WhatsApp" data-ar="رقم الهاتف / واتساب">Phone / WhatsApp</label>
+        <input type="tel" placeholder="+962 XX XXX XXXX">
+      </div>
+      <div class="form-group">
+        <label data-en="Service type" data-ar="نوع الخدمة">Service type</label>
+        <select>
+          <option data-en="Custom gift" data-ar="هدية مخصصة">Custom gift</option>
+          <option data-en="On-demand print" data-ar="طباعة حسب الطلب">On-demand print</option>
+          <option data-en="Prototype / engineering part" data-ar="نموذج أولي / قطعة هندسية">Prototype / engineering part</option>
+          <option data-en="Decorative item" data-ar="قطعة ديكورية">Decorative item</option>
+          <option data-en="Other" data-ar="أخرى">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label data-en="Describe your order" data-ar="وصف طلبك">Describe your order</label>
+        <textarea data-en-placeholder="Describe what you need, size, color, quantity..." data-ar-placeholder="صف ما تحتاجه، الحجم، اللون، الكمية..." placeholder="Describe what you need, size, color, quantity..."></textarea>
+      </div>
+      <button class="form-submit" data-en="Send request" data-ar="أرسل الطلب">Send request</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo">Punto.</a>
+        <div class="footer-tagline" data-en="3D printing in Jordan — gifts, prototypes, and custom objects." data-ar="طباعة ثلاثية الأبعاد في الأردن — هدايا ونماذج أولية وقطع مخصصة.">3D printing in Jordan — gifts, prototypes, and custom objects.</div>
+      </div>
+      <div class="footer-links">
+        <h4 data-en="Services" data-ar="الخدمات">Services</h4>
+        <ul>
+          <li><a href="#services" data-en="Custom gifts" data-ar="هدايا مخصصة">Custom gifts</a></li>
+          <li><a href="#services" data-en="On-demand prints" data-ar="طباعة حسب الطلب">On-demand prints</a></li>
+          <li><a href="#services" data-en="Prototyping" data-ar="نماذج أولية">Prototyping</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4 data-en="Company" data-ar="الشركة">Company</h4>
+        <ul>
+          <li><a href="#process" data-en="How it works" data-ar="كيف نعمل">How it works</a></li>
+          <li><a href="#gallery" data-en="Our work" data-ar="أعمالنا">Our work</a></li>
+          <li><a href="#contact" data-en="Contact" data-ar="تواصل">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4 data-en="Follow" data-ar="تابعنا">Follow</h4>
+        <ul>
+          <li><a href="https://instagram.com/punto.jo">Instagram</a></li>
+          <li><a href="https://wa.me/962770295890">WhatsApp</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span data-en="© 2025 Punto. — Jordan" data-ar="© 2025 Punto. — الأردن">© 2025 Punto. — Jordan</span>
+      <span data-en="Made with precision." data-ar="مصنوع بدقة.">Made with precision.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function setLang(lang) {
+    const html = document.documentElement;
+    html.setAttribute('lang', lang);
+    html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+
+    document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+
+    document.querySelectorAll('[data-en]').forEach(el => {
+      const text = el.getAttribute(`data-${lang}`);
+      if (text) el.innerHTML = text;
+    });
+
+    document.querySelectorAll('[data-en-placeholder]').forEach(el => {
+      const ph = el.getAttribute(`data-${lang}-placeholder`);
+      if (ph) el.setAttribute('placeholder', ph);
+    });
+
+    document.querySelectorAll('select option[data-en]').forEach(opt => {
+      const text = opt.getAttribute(`data-${lang}`);
+      if (text) opt.textContent = text;
+    });
+
+    localStorage.setItem('puntoLang', lang);
+  }
+
+  const saved = localStorage.getItem('puntoLang');
+  if (saved && saved !== 'en') setLang(saved);
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.boxShadow = window.scrollY > 20 ? '0 4px 24px rgba(41,182,246,0.08)' : 'none';
+  });
+</script>
+</body>
+</html>
