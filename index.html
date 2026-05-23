@@ -427,9 +427,8 @@
     <div class="contact-form reveal">
       <div class="form-title" data-en="Request a quote" data-ar="اطلب عرض سعر">Request a quote</div>
 
-      <form id="punto-form" action="https://formspree.io/f/mdajdzbo" method="POST">
+      <form id="punto-form">
         <input type="hidden" name="_subject" value="New order request from puntojo.com">
-        <input type="hidden" name="_next" value="https://puntojo.com/thankyou.html">
         <div class="form-group">
           <label data-en="Your name" data-ar="اسمك">Your name</label>
           <input type="text" name="name" required data-en-placeholder="e.g. Ahmad Al-Rashid" data-ar-placeholder="مثال: أحمد الراشد" placeholder="e.g. Ahmad Al-Rashid">
@@ -544,6 +543,35 @@
   const nav = document.querySelector('nav');
   window.addEventListener('scroll', () => {
     nav.style.boxShadow = window.scrollY > 20 ? '0 4px 24px rgba(41,182,246,0.08)' : 'none';
+  });
+
+  document.getElementById('punto-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const lang = document.documentElement.getAttribute('lang') || 'en';
+    const btn = document.getElementById('form-btn');
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+    btn.textContent = lang === 'ar' ? 'جاري الإرسال...' : 'Sending...';
+    try {
+      const res = await fetch('https://formspree.io/f/mdajdzbo', {
+        method: 'POST',
+        body: new FormData(this),
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        window.location.href = 'thankyou.html';
+      } else {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed');
+      }
+    } catch(err) {
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      btn.textContent = lang === 'ar' ? 'أرسل الطلب' : 'Send request';
+      alert(lang === 'ar'
+        ? 'حدث خطأ. يرجى التواصل عبر واتساب: 962770295890+'
+        : 'Something went wrong. Please WhatsApp us at +962770295890');
+    }
   });
 </script>
 </body>
