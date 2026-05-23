@@ -426,29 +426,46 @@
     </div>
     <div class="contact-form reveal">
       <div class="form-title" data-en="Request a quote" data-ar="اطلب عرض سعر">Request a quote</div>
-      <div class="form-group">
-        <label data-en="Your name" data-ar="اسمك">Your name</label>
-        <input type="text" data-en-placeholder="e.g. Ahmad Al-Rashid" data-ar-placeholder="مثال: أحمد الراشد" placeholder="e.g. Ahmad Al-Rashid">
+
+      <div id="form-success" style="display:none; background:#E8F5E9; border:1px solid #A5D6A7; border-radius:12px; padding:1.25rem; text-align:center; margin-bottom:1rem;">
+        <div style="font-size:22px; margin-bottom:8px;">✓</div>
+        <div id="form-success-msg" style="font-size:14px; font-weight:500; color:#2E7D32;" data-en="Request sent! We'll get back to you soon." data-ar="تم إرسال طلبك! سنتواصل معك قريباً.">Request sent! We'll get back to you soon.</div>
       </div>
-      <div class="form-group">
-        <label data-en="Phone / WhatsApp" data-ar="رقم الهاتف / واتساب">Phone / WhatsApp</label>
-        <input type="tel" placeholder="+962 XX XXX XXXX">
+
+      <div id="form-error" style="display:none; background:#FFEBEE; border:1px solid #FFCDD2; border-radius:12px; padding:1rem; margin-bottom:1rem;">
+        <div id="form-error-msg" style="font-size:13px; color:#C62828;" data-en="Something went wrong. Please try WhatsApp instead." data-ar="حدث خطأ. يرجى التواصل عبر واتساب.">Something went wrong. Please try WhatsApp instead.</div>
       </div>
-      <div class="form-group">
-        <label data-en="Service type" data-ar="نوع الخدمة">Service type</label>
-        <select>
-          <option data-en="Custom gift" data-ar="هدية مخصصة">Custom gift</option>
-          <option data-en="On-demand print" data-ar="طباعة حسب الطلب">On-demand print</option>
-          <option data-en="Prototype / engineering part" data-ar="نموذج أولي / قطعة هندسية">Prototype / engineering part</option>
-          <option data-en="Decorative item" data-ar="قطعة ديكورية">Decorative item</option>
-          <option data-en="Other" data-ar="أخرى">Other</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label data-en="Describe your order" data-ar="وصف طلبك">Describe your order</label>
-        <textarea data-en-placeholder="Describe what you need, size, color, quantity..." data-ar-placeholder="صف ما تحتاجه، الحجم، اللون، الكمية..." placeholder="Describe what you need, size, color, quantity..."></textarea>
-      </div>
-      <button class="form-submit" data-en="Send request" data-ar="أرسل الطلب">Send request</button>
+
+      <form id="punto-form" action="https://formspree.io/f/mdajdzbo" method="POST">
+        <input type="hidden" name="_subject" value="New order request from Punto.jo website">
+        <div class="form-group">
+          <label data-en="Your name" data-ar="اسمك">Your name</label>
+          <input type="text" name="name" required data-en-placeholder="e.g. Ahmad Al-Rashid" data-ar-placeholder="مثال: أحمد الراشد" placeholder="e.g. Ahmad Al-Rashid">
+        </div>
+        <div class="form-group">
+          <label data-en="Phone / WhatsApp" data-ar="رقم الهاتف / واتساب">Phone / WhatsApp</label>
+          <input type="tel" name="phone" required placeholder="+962 XX XXX XXXX">
+        </div>
+        <div class="form-group">
+          <label data-en="Email (optional)" data-ar="البريد الإلكتروني (اختياري)">Email (optional)</label>
+          <input type="email" name="email" data-en-placeholder="your@email.com" data-ar-placeholder="بريدك الإلكتروني" placeholder="your@email.com">
+        </div>
+        <div class="form-group">
+          <label data-en="Service type" data-ar="نوع الخدمة">Service type</label>
+          <select name="service">
+            <option data-en="Custom gift" data-ar="هدية مخصصة">Custom gift</option>
+            <option data-en="On-demand print" data-ar="طباعة حسب الطلب">On-demand print</option>
+            <option data-en="Prototype / engineering part" data-ar="نموذج أولي / قطعة هندسية">Prototype / engineering part</option>
+            <option data-en="Decorative item" data-ar="قطعة ديكورية">Decorative item</option>
+            <option data-en="Other" data-ar="أخرى">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label data-en="Describe your order" data-ar="وصف طلبك">Describe your order</label>
+          <textarea name="message" required data-en-placeholder="Describe what you need, size, color, quantity..." data-ar-placeholder="صف ما تحتاجه، الحجم، اللون، الكمية..." placeholder="Describe what you need, size, color, quantity..."></textarea>
+        </div>
+        <button type="submit" class="form-submit" id="form-btn" data-en="Send request" data-ar="أرسل الطلب">Send request</button>
+      </form>
     </div>
   </div>
 </section>
@@ -535,6 +552,43 @@
   const nav = document.querySelector('nav');
   window.addEventListener('scroll', () => {
     nav.style.boxShadow = window.scrollY > 20 ? '0 4px 24px rgba(41,182,246,0.08)' : 'none';
+  });
+
+  const form = document.getElementById('punto-form');
+  const btn = document.getElementById('form-btn');
+  const successBox = document.getElementById('form-success');
+  const errorBox = document.getElementById('form-error');
+
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const lang = document.documentElement.getAttribute('lang') || 'en';
+    btn.disabled = true;
+    btn.textContent = lang === 'ar' ? 'جاري الإرسال...' : 'Sending...';
+    btn.style.opacity = '0.7';
+    errorBox.style.display = 'none';
+
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        form.style.display = 'none';
+        successBox.style.display = 'block';
+        const msg = successBox.querySelector('#form-success-msg');
+        msg.textContent = msg.getAttribute(`data-${lang}`);
+      } else {
+        throw new Error('Failed');
+      }
+    } catch {
+      errorBox.style.display = 'block';
+      const msg = errorBox.querySelector('#form-error-msg');
+      msg.textContent = msg.getAttribute(`data-${lang}`);
+      btn.disabled = false;
+      btn.textContent = lang === 'ar' ? 'أرسل الطلب' : 'Send request';
+      btn.style.opacity = '1';
+    }
   });
 </script>
 </body>
